@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public User loadUserByUsername(final String username) throws UsernameNotFoundException {
-        return userRepository.findOne(QUser.user.username.eq(username))
+        return userRepository.findOne(QUser.user.email.eq(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
     }
 }

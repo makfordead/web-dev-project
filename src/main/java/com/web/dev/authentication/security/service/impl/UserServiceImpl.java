@@ -34,9 +34,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Throwable.class)
     public void save(final SignUpRequest request) {
         User user = new User();
-        user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
+        user.setProfileCompleted(false);
 
         Optional<Role> role = roleRepository.findOne(QRole.role.name.eq("USER"));
 

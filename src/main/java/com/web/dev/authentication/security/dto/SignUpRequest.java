@@ -12,8 +12,6 @@ import javax.validation.constraints.NotNull;
 public class SignUpRequest {
 
     @NotEmpty
-    String username;
-
     String email;
 
     @NotEmpty

@@ -40,10 +40,10 @@ public class User implements UserDetails {
     @Id
     String id = UUID.randomUUID().toString().replace("-", "");
 
-    @Column(nullable = false, unique = true)
+    @Column(unique = true)
     String username;
 
-    @Column(unique = true)
+    @Column(nullable = false, unique = true)
     String email;
 
     @Column(nullable = false)
@@ -55,9 +55,29 @@ public class User implements UserDetails {
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     Date lastUpdated;
 
+    @Column
+    boolean profileCompleted;
+
     @Column(name = "points")
     private int points;
 
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column
+    private String intro;
+
+    @Column
+    private String gender;
+
+    @Column
+    private String phoneNumber;
+
+    @Column
+    private String habitualResidence;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
@@ -94,5 +114,9 @@ public class User implements UserDetails {
         if (dateCreated == null) {
             dateCreated = new Date();
         }
+    }
+
+    public String getUsername() {
+        return email;
     }
 }

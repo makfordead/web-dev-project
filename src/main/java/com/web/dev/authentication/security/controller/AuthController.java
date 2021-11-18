@@ -42,10 +42,10 @@ public class AuthController {
 
     @PostMapping(value = "/login", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody final LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         final User userDetails = (User) authentication.getPrincipal();
-        return ResponseEntity.ok(JwtResponse.builder().id(userDetails.getId()).username(userDetails.getUsername())
+        return ResponseEntity.ok(JwtResponse.builder().profileCompleted(userDetails.isProfileCompleted()).id(userDetails.getId()).email(userDetails.getEmail())
                 .accessToken(jwtUtils.generateJwtToken(authentication)).tokenType("Bearer")
                 .roles(userDetails.getRoles().stream().map(r -> {
                     RoleResponse response = new RoleResponse();

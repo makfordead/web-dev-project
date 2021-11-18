@@ -12,5 +12,5 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 public class FriendShipUserResponseDto {
     String id;
-    String username;
+    String email;
 }

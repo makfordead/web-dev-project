@@ -9,9 +9,8 @@ import javax.validation.constraints.NotEmpty;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class    LoginRequest {
-
     @NotEmpty
-    String username;
+    String email;
 
     @NotEmpty
     String password;

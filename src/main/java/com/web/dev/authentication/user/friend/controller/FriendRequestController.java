@@ -1,7 +1,6 @@
 package com.web.dev.authentication.user.friend.controller;
 
 import com.web.dev.authentication.user.friend.constant.ConfirmRequest;
-import com.web.dev.authentication.user.friend.constant.FriendshipStatus;
 import com.web.dev.authentication.user.friend.dto.FriendShipUserResponseDto;
 import com.web.dev.authentication.user.friend.service.FriendshipService;
 import lombok.AccessLevel;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,8 +28,8 @@ public class FriendRequestController {
     FriendshipService friendshipService;
 
     @GetMapping("/find/user")
-    public ResponseEntity<FriendShipUserResponseDto> findFriend(Principal principal, @RequestParam final String friendUsername) {
-        return friendshipService.findFriend(principal, friendUsername);
+    public ResponseEntity<FriendShipUserResponseDto> findFriend(Principal principal, @RequestParam final String email) {
+        return friendshipService.findFriend(principal, email);
     }
 
     @PostMapping("/send/request")

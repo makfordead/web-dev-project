@@ -58,11 +58,13 @@ public class DefaultExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorResponse> handleException(final DataIntegrityViolationException ex) {
+        log.error(EXCEPTION_OCCURRED_MSG, ex);
         return new ResponseEntity(Map.of("errors", List.of("User already exists")), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Map<String, Object>>  notFoundException(final NotFoundException ex){
+        log.error(EXCEPTION_OCCURRED_MSG, ex);
         return new ResponseEntity(Map.of("code", "6000", "error", List.of(ex.getMessage())), HttpStatus.BAD_REQUEST);
     }
 }

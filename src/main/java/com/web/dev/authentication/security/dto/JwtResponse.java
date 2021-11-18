@@ -14,11 +14,13 @@ public class JwtResponse {
 
     String id;
 
-    String username;
+    String email;
 
     String accessToken;
 
     String tokenType;
+
+    boolean profileCompleted;
 
     List<RoleResponse> roles;
 }
