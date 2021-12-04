@@ -5,8 +5,10 @@ import com.web.dev.authentication.security.repository.UserRepository;
 import com.web.dev.authentication.security.repository.entity.QUser;
 import com.web.dev.authentication.security.repository.entity.User;
 import com.web.dev.authentication.user.profile.dto.ProfileRequestDto;
+import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,8 @@ import java.security.Principal;
 public class ProfileService {
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    ModelMapper modelMapper;
 
     public void updateProfile(final Principal principal, final ProfileRequestDto req) {
 
@@ -33,5 +37,12 @@ public class ProfileService {
 
         user.setProfileCompleted(true);
         userRepository.save(user);
+    }
+
+    public ProfileResponseDto getProfile() {
+        final User user =
+                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return modelMapper.map(user, ProfileResponseDto.class);
     }
 }

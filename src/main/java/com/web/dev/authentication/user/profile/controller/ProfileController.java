@@ -1,12 +1,14 @@
 package com.web.dev.authentication.user.profile.controller;
 
 import com.web.dev.authentication.user.profile.dto.ProfileRequestDto;
+import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
 import com.web.dev.authentication.user.profile.service.ProfileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +28,11 @@ public class ProfileController {
     @PutMapping("/update")
     public void updateProfile(Principal principal, @RequestBody final ProfileRequestDto req) {
         profileService.updateProfile(principal, req);
+    }
+
+
+    @GetMapping
+    public ProfileResponseDto getProfile(final Principal principal) {
+        return profileService.getProfile();
     }
 }

@@ -68,7 +68,7 @@ public class FriendshipService {
 
         final Iterable<Friendship> friendships =
                 friendshipRepository.findAll(QFriendship.friendship
-                        .firstParty.username.eq(user.getEmail()));
+                        .firstParty.email.eq(user.getEmail()));
 
         final List<FriendshipRequestResponseDto> response =
                 new ArrayList<>();
