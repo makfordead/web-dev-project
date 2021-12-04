@@ -63,8 +63,7 @@ public class FriendshipService {
 
     @Transactional
     public ResponseEntity getFriendRequests(final Principal principal) {
-        final User user =
-                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
 
         final Iterable<Friendship> friendships =
