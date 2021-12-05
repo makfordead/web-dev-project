@@ -1,5 +1,7 @@
 package com.web.dev.authentication.user.friend.service;
 
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.web.dev.authentication.exception.NotFoundException;
 import com.web.dev.authentication.security.repository.UserRepository;
 import com.web.dev.authentication.security.repository.entity.QUser;
@@ -54,6 +56,25 @@ public class FriendshipService {
         final User secondUser = userRepository.findById(friendId)
                 .orElseThrow(() -> new NotFoundException("invalid friend user"));
 
+        final Predicate checkIfRequestIsAlreadySent = ExpressionUtils.allOf(QFriendship.friendship.firstParty.email.eq(firstUser.getEmail())
+                .and(QFriendship.friendship.secondParty.email.eq(secondUser.getEmail())));
+
+
+        final Predicate checkIfRequestIsReceived = ExpressionUtils.allOf(QFriendship.friendship.firstParty.email.eq(secondUser.getEmail())
+                .and(QFriendship.friendship.secondParty.email.eq(firstUser.getEmail())));
+
+        friendshipRepository.findOne(checkIfRequestIsAlreadySent).ifPresent(
+                f -> {
+                    throw new RuntimeException("friend request is already sent");
+                });
+
+
+        friendshipRepository.findOne(checkIfRequestIsReceived).ifPresent(
+                friendship -> {
+                    throw new RuntimeException("friend request is already received");
+                }
+        );
+
         Friendship friendship = new Friendship();
         friendship.setFirstParty(firstUser);
         friendship.setSecondParty(secondUser);
@@ -68,7 +89,11 @@ public class FriendshipService {
 
         final Iterable<Friendship> friendships =
                 friendshipRepository.findAll(QFriendship.friendship
-                        .firstParty.email.eq(user.getEmail()));
+                        .secondParty.email.eq(user.getEmail()).or(
+                                QFriendship.friendship.firstParty.email.eq(user.getEmail())
+                                        .and(QFriendship.friendship.status.eq(FriendshipStatus.PENDING)
+                                        .or(QFriendship.friendship.status.eq(FriendshipStatus.ACCEPTED)))
+                        ));
 
         final List<FriendshipRequestResponseDto> response =
                 new ArrayList<>();
@@ -87,7 +112,11 @@ public class FriendshipService {
                 .orElseThrow(() -> new NotFoundException("invalid friendship id"));
 
         friendship.setStatus(FriendshipStatus.valueOf(confirmRequest.name()));
-        friendshipRepository.save(friendship);
+
+        if (friendship.getStatus().equals(FriendshipStatus.REJECTED))
+            friendshipRepository.delete(friendship);
+        else
+            friendshipRepository.save(friendship);
     }
 
     @Transactional
@@ -98,6 +127,27 @@ public class FriendshipService {
                 .orElseThrow(() -> new NotFoundException("invalid friendship id"));
 
         friendship.setStatus(FriendshipStatus.valueOf(confirmRequest.name()));
-        friendshipRepository.save(friendship);
+
+        if (friendship.getStatus().equals(FriendshipStatus.REJECTED))
+            friendshipRepository.delete(friendship);
+        else
+            friendshipRepository.save(friendship);
+    }
+
+
+    public ResponseEntity getFriends(Principal principal) {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        final Predicate predicate = ExpressionUtils.allOf(QFriendship.friendship.firstParty.email.eq(user.getEmail()).or(
+                QFriendship.friendship.secondParty.email.eq(user.getEmail())));
+
+        final Iterable<Friendship> friends = friendshipRepository.findAll(
+                ExpressionUtils.and(predicate, QFriendship.friendship.status.eq(FriendshipStatus.ACCEPTED))
+        );
+
+        final List<Friendship> response = new ArrayList<>();
+        friends.forEach(response::add);
+
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

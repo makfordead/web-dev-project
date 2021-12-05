@@ -53,4 +53,9 @@ public class FriendRequestController {
                        @RequestParam String friendshipId) {
         friendshipService.rejectFriendRequest(principal, friendshipId, status);
     }
+
+    @GetMapping
+    public ResponseEntity getFriends(Principal principal) {
+        return friendshipService.getFriends(principal);
+    }
 }
