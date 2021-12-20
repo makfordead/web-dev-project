@@ -88,7 +88,7 @@ public class TransactionService {
 
     public void cancelTransaction(Principal principal, String transactionId) {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).or(QTransaction.transaction.initiatedBy.email.eq(user.getEmail()))).orElseThrow();
+        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).and(QTransaction.transaction.initiatedBy.email.eq(user.getEmail()))).orElseThrow();
         transaction.setTransactionStatus(TransactionStatus.CANCELLED);
         transactionRepository.save(transaction);
     }
