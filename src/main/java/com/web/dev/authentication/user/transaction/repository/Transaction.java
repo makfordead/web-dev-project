@@ -40,6 +40,8 @@ public class Transaction {
 
     Double amount;
 
+    private TransactionStatus transactionStatus;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;

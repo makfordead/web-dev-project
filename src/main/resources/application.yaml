@@ -9,7 +9,11 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     generate-ddl: true
     open-in-view: false
     show-sql: true
+
+stripe:
+  secret:
+    key: sk_test_51IjpywIWp3VgGAPO4lrvvPgRXeMyz0WMpy2I5BQtsXyOeAENe6rFjisiQYLp5OiHSHxZTMUf5idrdq3idKnaOnNJ00ustH6LpR

@@ -13,6 +13,7 @@ import com.web.dev.authentication.user.transaction.dto.TransactionResponseDto;
 import com.web.dev.authentication.user.transaction.repository.QTransaction;
 import com.web.dev.authentication.user.transaction.repository.Transaction;
 import com.web.dev.authentication.user.transaction.repository.TransactionRepository;
+import com.web.dev.authentication.user.transaction.repository.TransactionStatus;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,7 +39,7 @@ public class TransactionService {
         final User user =
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final Friendship friendship = friendshipRepository.findById(req.getFriendshipId()).orElseThrow();
-        if(!(friendship.getFirstParty().getEmail().equals(user.getEmail()) || friendship.getSecondParty().getEmail().equals(user.getEmail())))
+        if (!(friendship.getFirstParty().getEmail().equals(user.getEmail()) || friendship.getSecondParty().getEmail().equals(user.getEmail())))
             throw new RuntimeException("friendship id does not belong to given entities");
 
         final User secondUser = userRepository.findOne(QUser.user.id.eq(req.getRequestedUserId())).orElseThrow();
@@ -46,6 +48,7 @@ public class TransactionService {
         transaction.setReceivingUser(secondUser);
         transaction.setInitiatedBy(user);
         transaction.setAmount(req.getAmount());
+        transaction.setTransactionStatus(TransactionStatus.PENDING);
         transactionRepository.save(transaction);
     }
 
@@ -54,7 +57,7 @@ public class TransactionService {
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final Predicate predicate = QTransaction.transaction.friendship.id.eq(friendshipId)
                 .and(QTransaction.transaction.initiatedBy.email.eq(user.getEmail())
-                .or(QTransaction.transaction.receivingUser.email.eq(user.getEmail())));
+                        .or(QTransaction.transaction.receivingUser.email.eq(user.getEmail())));
 
         final Iterable<Transaction> transactions = transactionRepository.findAll(predicate);
         final ArrayList<TransactionResponseDto> transactionList = new ArrayList();
@@ -71,5 +74,20 @@ public class TransactionService {
         transactionResponseDto.setInitiatedBy(transaction.getInitiatedBy().getId());
         transactionResponseDto.setReceiveBy(transaction.getReceivingUser().getId());
         return transactionResponseDto;
+    }
+
+    public void acceptOrRejectTransaction(Principal principal, String transactionId, TransactionStatus transactionStatus) {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).or(QTransaction.transaction.receivingUser.email.eq(user.getEmail()))).orElseThrow();
+        transaction.setTransactionStatus(transactionStatus);
+        transactionRepository.save(transaction);
+    }
+
+
+    public void cancelTransaction(Principal principal, String transactionId) {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).or(QTransaction.transaction.initiatedBy.email.eq(user.getEmail()))).orElseThrow();
+        transaction.setTransactionStatus(TransactionStatus.CANCELLED);
+        transactionRepository.save(transaction);
     }
 }
