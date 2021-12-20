@@ -74,6 +74,7 @@ public class TransactionService {
         transactionResponseDto.setInitiatedBy(transaction.getInitiatedBy().getId());
         transactionResponseDto.setReceiveBy(transaction.getReceivingUser().getId());
         transactionResponseDto.setId(transaction.getId());
+        transactionResponseDto.setTransactionStatus(transaction.getTransactionStatus());
         return transactionResponseDto;
     }
 

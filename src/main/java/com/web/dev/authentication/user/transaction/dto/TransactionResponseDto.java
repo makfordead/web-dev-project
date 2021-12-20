@@ -1,5 +1,6 @@
 package com.web.dev.authentication.user.transaction.dto;
 
+import com.web.dev.authentication.user.transaction.repository.TransactionStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
@@ -14,4 +15,5 @@ public class TransactionResponseDto {
     String receiveBy;
     Double amount;
     LocalDateTime createdAt;
+    TransactionStatus transactionStatus;
 }
