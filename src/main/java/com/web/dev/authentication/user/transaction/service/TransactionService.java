@@ -73,6 +73,7 @@ public class TransactionService {
         transactionResponseDto.setCreatedAt(transaction.getCreatedAt());
         transactionResponseDto.setInitiatedBy(transaction.getInitiatedBy().getId());
         transactionResponseDto.setReceiveBy(transaction.getReceivingUser().getId());
+        transactionResponseDto.setId(transaction.getId());
         return transactionResponseDto;
     }
 
