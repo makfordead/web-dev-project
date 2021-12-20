@@ -79,6 +79,9 @@ public class User implements UserDetails {
     @Column
     private String habitualResidence;
 
+    @Column
+    private String stripeCustomerId;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     List<Role> roles = new ArrayList<>();

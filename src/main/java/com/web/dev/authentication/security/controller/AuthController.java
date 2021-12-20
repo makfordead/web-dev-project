@@ -1,5 +1,6 @@
 package com.web.dev.authentication.security.controller;
 
+import com.stripe.exception.StripeException;
 import com.web.dev.authentication.security.dto.JwtResponse;
 import com.web.dev.authentication.security.dto.LoginRequest;
 import com.web.dev.authentication.security.dto.RoleResponse;
@@ -56,7 +57,7 @@ public class AuthController {
     }
 
     @PostMapping(value = "/signup")
-    public final ResponseEntity<Void> signUp(@Valid @RequestBody final SignUpRequest request) {
+    public final ResponseEntity<Void> signUp(@Valid @RequestBody final SignUpRequest request) throws StripeException {
         userService.save(request);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

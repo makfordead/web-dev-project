@@ -1,6 +1,8 @@
 package com.web.dev.authentication.security.service.impl;
 
 
+import com.stripe.exception.StripeException;
+import com.stripe.model.Customer;
 import com.web.dev.authentication.security.dto.SignUpRequest;
 import com.web.dev.authentication.security.repository.RoleRepository;
 import com.web.dev.authentication.security.repository.UserRepository;
@@ -8,6 +10,7 @@ import com.web.dev.authentication.security.repository.entity.QRole;
 import com.web.dev.authentication.security.repository.entity.Role;
 import com.web.dev.authentication.security.repository.entity.User;
 import com.web.dev.authentication.security.service.UserService;
+import com.web.dev.authentication.stripe.StripeCreateCustomerService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -30,9 +33,11 @@ public class UserServiceImpl implements UserService {
 
     UserRepository userRepository;
 
+    StripeCreateCustomerService stripeService;
+
     @Override
     @Transactional(rollbackFor = Throwable.class)
-    public void save(final SignUpRequest request) {
+    public void save(final SignUpRequest request) throws StripeException {
         User user = new User();
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
@@ -49,6 +54,9 @@ public class UserServiceImpl implements UserService {
             newRole = roleRepository.save(newRole);
             user.setRoles(Collections.singletonList(newRole));
         }
+        final Customer customer = stripeService.createCustomer(user);
+        user.setStripeCustomerId(customer.getId());
         userRepository.save(user);
     }
+
 }
