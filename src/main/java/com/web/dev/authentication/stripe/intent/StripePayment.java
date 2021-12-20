@@ -51,7 +51,7 @@ public class StripePayment {
             PaymentIntentCreateParams paymentIntentCreateParams =
                     PaymentIntentCreateParams.builder()
                             .setCurrency("usd")
-                            .setAmount(Long.parseLong(amount.toString())*10)
+                            .setAmount(Long.parseLong("" + Double.valueOf(amount).intValue()) * 10)
                             .setPaymentMethod(methods.get(i).getId())
                             .setCustomer(custId)
                             .setConfirm(true)
