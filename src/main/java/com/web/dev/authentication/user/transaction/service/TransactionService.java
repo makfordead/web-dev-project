@@ -80,7 +80,7 @@ public class TransactionService {
 
     public void acceptOrRejectTransaction(Principal principal, String transactionId, TransactionStatus transactionStatus) {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).or(QTransaction.transaction.receivingUser.email.eq(user.getEmail()))).orElseThrow();
+        final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).and(QTransaction.transaction.receivingUser.email.eq(user.getEmail()))).orElseThrow();
         transaction.setTransactionStatus(transactionStatus);
         transactionRepository.save(transaction);
     }
