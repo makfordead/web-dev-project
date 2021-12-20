@@ -5,6 +5,7 @@ import com.querydsl.core.types.Predicate;
 import com.web.dev.authentication.security.repository.UserRepository;
 import com.web.dev.authentication.security.repository.entity.QUser;
 import com.web.dev.authentication.security.repository.entity.User;
+import com.web.dev.authentication.stripe.intent.StripePayment;
 import com.web.dev.authentication.user.friend.repository.Friendship;
 import com.web.dev.authentication.user.friend.repository.FriendshipRepository;
 import com.web.dev.authentication.user.transaction.dto.TransactionListResponseDto;
@@ -34,7 +35,8 @@ public class TransactionService {
     FriendshipRepository friendshipRepository;
     @Autowired
     UserRepository userRepository;
-
+    @Autowired
+    StripePayment stripePayment;
     public void createTransaction(final Principal principal, TransactionRequestDto req) {
         final User user =
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -82,6 +84,8 @@ public class TransactionService {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).and(QTransaction.transaction.receivingUser.email.eq(user.getEmail()))).orElseThrow();
         transaction.setTransactionStatus(transactionStatus);
+        if(transactionStatus.equals(TransactionStatus.ACCEPTED))
+            stripePayment.pay(user, transaction.getReceivingUser(), transaction.getAmount());
         transactionRepository.save(transaction);
     }
 

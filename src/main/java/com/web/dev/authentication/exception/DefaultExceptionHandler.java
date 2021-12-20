@@ -3,6 +3,8 @@ package com.web.dev.authentication.exception;
 
 import com.web.dev.authentication.exception.constant.ErrorCodeEnum;
 import com.web.dev.authentication.exception.dto.ErrorResponse;
+import com.web.dev.authentication.stripe.exception.PaymentFailedException;
+import com.web.dev.authentication.stripe.exception.PaymentMethodsNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -66,5 +68,18 @@ public class DefaultExceptionHandler {
     public ResponseEntity<Map<String, Object>>  notFoundException(final NotFoundException ex){
         log.error(EXCEPTION_OCCURRED_MSG, ex);
         return new ResponseEntity(Map.of("code", "6000", "error", List.of(ex.getMessage())), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PaymentMethodsNotFoundException.class)
+    public ResponseEntity<Object> handleException(final PaymentMethodsNotFoundException ex) {
+        log.error(EXCEPTION_OCCURRED_MSG, ex);
+        return new ResponseEntity<>(Map.of("message", "Customer has no " +
+                "payment method"), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(PaymentFailedException.class)
+    public ResponseEntity<Object> handleException(final PaymentFailedException ex) {
+        log.error(EXCEPTION_OCCURRED_MSG, ex);
+        return new ResponseEntity<>(Map.of("code", 5000), HttpStatus.BAD_REQUEST);
     }
 }
