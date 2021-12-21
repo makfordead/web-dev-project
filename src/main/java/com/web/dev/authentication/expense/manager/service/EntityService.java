@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -37,9 +38,14 @@ public class EntityService {
         expenseRepository.save(expense);
     }
 
-    public ExpenseResponseList getExpenses() {
+    public ExpenseResponseList getExpenses(final Integer month) {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        final Iterable<Expense> expenses = expenseRepository.findAll(QExpense.expense.user.email.eq(user.getEmail()));
+
+        Iterable<Expense> expenses = new ArrayList<>();
+        if(Objects.isNull(month))
+            expenses = expenseRepository.findAll(QExpense.expense.user.email.eq(user.getEmail()));
+        else
+            expenses = expenseRepository.getByYearAndMonth(month);
         final List<ExpenseResponseDto> expenseResponseDtos = new ArrayList<>();
         expenses.forEach( e -> {
             expenseResponseDtos.add(modelMapper.map(e, ExpenseResponseDto.class));

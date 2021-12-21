@@ -8,6 +8,7 @@ import com.web.dev.authentication.security.repository.entity.User;
 import com.web.dev.authentication.stripe.intent.StripePayment;
 import com.web.dev.authentication.user.friend.repository.Friendship;
 import com.web.dev.authentication.user.friend.repository.FriendshipRepository;
+import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
 import com.web.dev.authentication.user.transaction.dto.TransactionListResponseDto;
 import com.web.dev.authentication.user.transaction.dto.TransactionRequestDto;
 import com.web.dev.authentication.user.transaction.dto.TransactionResponseDto;
@@ -17,6 +18,7 @@ import com.web.dev.authentication.user.transaction.repository.TransactionReposit
 import com.web.dev.authentication.user.transaction.repository.TransactionStatus;
 import lombok.AccessLevel;
 import lombok.experimental.FieldDefaults;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,8 @@ public class TransactionService {
     UserRepository userRepository;
     @Autowired
     StripePayment stripePayment;
+    @Autowired
+    ModelMapper modelMapper;
     public void createTransaction(final Principal principal, TransactionRequestDto req) {
         final User user =
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -55,8 +59,7 @@ public class TransactionService {
     }
 
     public TransactionListResponseDto getTransactions(final Principal principal, final String friendshipId) {
-        final User user =
-                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final Predicate predicate = QTransaction.transaction.friendship.id.eq(friendshipId)
                 .and(QTransaction.transaction.initiatedBy.email.eq(user.getEmail())
                         .or(QTransaction.transaction.receivingUser.email.eq(user.getEmail())));
@@ -73,8 +76,8 @@ public class TransactionService {
         final TransactionResponseDto transactionResponseDto = new TransactionResponseDto();
         transactionResponseDto.setAmount(transaction.getAmount());
         transactionResponseDto.setCreatedAt(transaction.getCreatedAt());
-        transactionResponseDto.setInitiatedBy(transaction.getInitiatedBy().getId());
-        transactionResponseDto.setReceiveBy(transaction.getReceivingUser().getId());
+        transactionResponseDto.setInitiatedBy(modelMapper.map(transaction.getInitiatedBy(), ProfileResponseDto.class));
+        transactionResponseDto.setReceiveBy(modelMapper.map(transaction.getReceivingUser(), ProfileResponseDto.class));
         transactionResponseDto.setId(transaction.getId());
         transactionResponseDto.setTransactionStatus(transaction.getTransactionStatus());
         return transactionResponseDto;

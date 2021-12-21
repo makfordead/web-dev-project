@@ -1,5 +1,6 @@
 package com.web.dev.authentication.user.transaction.dto;
 
+import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
 import com.web.dev.authentication.user.transaction.repository.TransactionStatus;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -11,8 +12,8 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class TransactionResponseDto {
     String id;
-    String initiatedBy;
-    String receiveBy;
+    ProfileResponseDto initiatedBy;
+    ProfileResponseDto receiveBy;
     Double amount;
     LocalDateTime createdAt;
     TransactionStatus transactionStatus;
