@@ -13,6 +13,7 @@ public class ExpenseResponseDto {
     String id;
     ProfileResponseDto user;
     String name;
+    String category;
     String description;
     Double amount;
     Date dateCreated;

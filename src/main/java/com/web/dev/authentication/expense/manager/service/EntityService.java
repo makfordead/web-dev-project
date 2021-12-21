@@ -44,4 +44,11 @@ public class EntityService {
         });
         return new ExpenseResponseList(expenseResponseDtos);
     }
+
+    public void delete(final String expenseId) {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final Expense expense = expenseRepository.findOne(QExpense.expense.user.email.eq(user.getEmail())
+        .and(QExpense.expense.id.eq(expenseId))).orElseThrow();
+        expenseRepository.delete(expense);
+    }
 }

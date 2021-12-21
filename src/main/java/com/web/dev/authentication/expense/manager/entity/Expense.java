@@ -24,6 +24,7 @@ public class Expense {
     String name;
     String description;
     Double amount;
+    String category;
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     Date dateCreated;
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
