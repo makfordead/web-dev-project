@@ -13,4 +13,5 @@ public class ExpenseRequestDto {
     String description;
     Double amount;
     Date dateCreated;
+    String category;
 }

@@ -32,6 +32,8 @@ public class EntityService {
         expense.setAmount(req.getAmount());
         expense.setDescription(req.getDescription());
         expense.setUser(user);
+        expense.setCategory(req.getCategory());
+        expense.setCategory(req.getCategory());
         expenseRepository.save(expense);
     }
 
