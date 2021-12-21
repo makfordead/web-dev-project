@@ -14,4 +14,5 @@ public class ProfileResponseDto {
     private String gender;
     private String phoneNumber;
     private String habitualResidence;
+    private String profileUrl;
 }

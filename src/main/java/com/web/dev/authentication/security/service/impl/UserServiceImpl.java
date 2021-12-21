@@ -42,6 +42,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(request.getEmail());
         user.setPassword(encoder.encode(request.getPassword()));
         user.setProfileCompleted(false);
+        user.setProfileUrl(request.getProfileUrl());
 
         Optional<Role> role = roleRepository.findOne(QRole.role.name.eq("USER"));
 

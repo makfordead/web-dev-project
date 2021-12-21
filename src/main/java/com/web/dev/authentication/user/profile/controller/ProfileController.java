@@ -30,7 +30,6 @@ public class ProfileController {
         profileService.updateProfile(principal, req);
     }
 
-
     @GetMapping
     public ProfileResponseDto getProfile(final Principal principal) {
         return profileService.getProfile();
