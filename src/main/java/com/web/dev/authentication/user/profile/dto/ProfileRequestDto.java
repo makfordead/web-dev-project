@@ -15,4 +15,5 @@ public class ProfileRequestDto {
     String phoneNumber;
     String lastName;
     String habitualResidence;
+    String profileUrl;
 }

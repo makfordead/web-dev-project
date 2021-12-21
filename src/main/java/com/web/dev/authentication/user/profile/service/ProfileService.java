@@ -34,7 +34,7 @@ public class ProfileService {
         user.setPhoneNumber(req.getPhoneNumber());
         user.setLastName(req.getLastName());
         user.setHabitualResidence(req.getHabitualResidence());
-
+        user.setProfileUrl(req.getProfileUrl());
         user.setProfileCompleted(true);
         userRepository.save(user);
     }
