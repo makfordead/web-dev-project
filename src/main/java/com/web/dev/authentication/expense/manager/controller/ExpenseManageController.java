@@ -23,14 +23,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ExpenseManageController {
     @Autowired
     EntityService entityService;
+
     @PostMapping
     public void createExpense(@RequestBody final ExpenseRequestDto req) {
         entityService.createExpense(req);
     }
 
     @GetMapping
-    public ExpenseResponseList getExpenses(@RequestParam(required = false) final Integer month) {
-        return entityService.getExpenses(month);
+    public ExpenseResponseList getExpenses(@RequestParam(required = false) final Integer month,
+                                           @RequestParam(required = false) final Integer year) {
+        return entityService.getExpenses(month, year);
     }
 
     @DeleteMapping("/{expenseId}")

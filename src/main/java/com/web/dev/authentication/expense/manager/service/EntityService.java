@@ -38,14 +38,14 @@ public class EntityService {
         expenseRepository.save(expense);
     }
 
-    public ExpenseResponseList getExpenses(final Integer month) {
+    public ExpenseResponseList getExpenses(final Integer month, final Integer year) {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Iterable<Expense> expenses = new ArrayList<>();
         if(Objects.isNull(month))
             expenses = expenseRepository.findAll(QExpense.expense.user.email.eq(user.getEmail()));
         else
-            expenses = expenseRepository.getByYearAndMonth(month);
+            expenses = expenseRepository.getByYearAndMonth(month, year);
         final List<ExpenseResponseDto> expenseResponseDtos = new ArrayList<>();
         expenses.forEach( e -> {
             expenseResponseDtos.add(modelMapper.map(e, ExpenseResponseDto.class));

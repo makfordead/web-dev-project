@@ -7,6 +7,6 @@ import org.springframework.data.querydsl.QuerydslPredicateExecutor;
 import java.util.List;
 
 public interface ExpenseRepository extends JpaRepository<Expense, String>, QuerydslPredicateExecutor<Expense> {
-    @Query("select e from Expense e where month(e.dateCreated) = ?1")
-    List<Expense> getByYearAndMonth(int month);
+    @Query("select e from Expense e where year(e.dateCreated) = ?2 and month(e.dateCreated) = ?1")
+    List<Expense> getByYearAndMonth(int month, int year);
 }
