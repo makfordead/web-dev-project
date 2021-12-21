@@ -99,4 +99,16 @@ public class TransactionService {
         transaction.setTransactionStatus(TransactionStatus.CANCELLED);
         transactionRepository.save(transaction);
     }
+
+
+    public TransactionListResponseDto getSelfTransactions() {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        final Predicate predicate = QTransaction.transaction.initiatedBy.email.eq(user.getEmail()).or(QTransaction.transaction.receivingUser.email.eq(user.getEmail()));
+        final Iterable<Transaction> transactions = transactionRepository.findAll(predicate);
+        final ArrayList<TransactionResponseDto> transactionList = new ArrayList();
+        transactions.forEach(t -> transactionList.add(map(t)));
+        final TransactionListResponseDto response = new TransactionListResponseDto();
+        response.setTransactions(transactionList);
+        return response;
+    }
 }

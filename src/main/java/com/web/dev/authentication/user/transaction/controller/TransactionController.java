@@ -49,4 +49,9 @@ public class TransactionController {
     public void cancelTransaction(final Principal principal, @RequestParam final String transactionId) {
         transactionService.cancelTransaction(principal, transactionId);
     }
+
+    @GetMapping("/self")
+    public TransactionListResponseDto getSelfTransactions() {
+        return transactionService.getSelfTransactions();
+    }
 }
