@@ -39,4 +39,9 @@ public class AdminComplainService {
         response.setComplains(complainResponseDtos);
         return response;
     }
+
+    public void deleteComplain(String complainId) {
+        complainRepository.findById(complainId).ifPresent(complainRepository::delete
+        );
+    }
 }
