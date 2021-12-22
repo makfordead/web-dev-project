@@ -29,6 +29,7 @@ public class AdminComplainController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ComplainResponseList complainResponseList() {
         return adminComplainService.getComplains();
     }
