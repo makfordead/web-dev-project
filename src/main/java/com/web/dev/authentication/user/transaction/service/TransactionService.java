@@ -6,7 +6,10 @@ import com.web.dev.authentication.security.repository.UserRepository;
 import com.web.dev.authentication.security.repository.entity.QUser;
 import com.web.dev.authentication.security.repository.entity.User;
 import com.web.dev.authentication.stripe.intent.StripePayment;
+import com.web.dev.authentication.user.complain.dto.ComplainResponseDto;
+import com.web.dev.authentication.user.complain.repository.Complain;
 import com.web.dev.authentication.user.complain.repository.ComplainRepository;
+import com.web.dev.authentication.user.complain.repository.QComplain;
 import com.web.dev.authentication.user.friend.repository.Friendship;
 import com.web.dev.authentication.user.friend.repository.FriendshipRepository;
 import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
@@ -44,6 +47,7 @@ public class TransactionService {
     ModelMapper modelMapper;
     @Autowired
     ComplainRepository complainRepository;
+
     public void createTransaction(final Principal principal, TransactionRequestDto req) {
         final User user =
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -83,6 +87,10 @@ public class TransactionService {
         transactionResponseDto.setReceiveBy(modelMapper.map(transaction.getReceivingUser(), ProfileResponseDto.class));
         transactionResponseDto.setId(transaction.getId());
         transactionResponseDto.setTransactionStatus(transaction.getTransactionStatus());
+        final Iterable<Complain> complains = complainRepository.findAll(QComplain.complain.transaction.id.eq(transaction.getId()));
+        final List<ComplainResponseDto> complainResponseDtos = new ArrayList<>();
+        complains.forEach(c -> complainResponseDtos.add(modelMapper.map(c, ComplainResponseDto.class)));
+        transactionResponseDto.setComplains(complainResponseDtos);
         return transactionResponseDto;
     }
 
@@ -90,7 +98,7 @@ public class TransactionService {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         final Transaction transaction = transactionRepository.findOne(QTransaction.transaction.id.eq(transactionId).and(QTransaction.transaction.receivingUser.email.eq(user.getEmail()))).orElseThrow();
         transaction.setTransactionStatus(transactionStatus);
-        if(transactionStatus.equals(TransactionStatus.ACCEPTED))
+        if (transactionStatus.equals(TransactionStatus.ACCEPTED))
             stripePayment.pay(user, transaction.getReceivingUser(), transaction.getAmount());
         transactionRepository.save(transaction);
     }
