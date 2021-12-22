@@ -6,6 +6,7 @@ import com.web.dev.authentication.security.repository.UserRepository;
 import com.web.dev.authentication.security.repository.entity.QUser;
 import com.web.dev.authentication.security.repository.entity.User;
 import com.web.dev.authentication.stripe.intent.StripePayment;
+import com.web.dev.authentication.user.complain.repository.ComplainRepository;
 import com.web.dev.authentication.user.friend.repository.Friendship;
 import com.web.dev.authentication.user.friend.repository.FriendshipRepository;
 import com.web.dev.authentication.user.profile.dto.ProfileResponseDto;
@@ -41,6 +42,8 @@ public class TransactionService {
     StripePayment stripePayment;
     @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    ComplainRepository complainRepository;
     public void createTransaction(final Principal principal, TransactionRequestDto req) {
         final User user =
                 (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

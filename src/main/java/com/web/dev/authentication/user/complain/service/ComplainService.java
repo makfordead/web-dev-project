@@ -1,6 +1,7 @@
 package com.web.dev.authentication.user.complain.service;
 
 import com.web.dev.authentication.security.repository.entity.User;
+import com.web.dev.authentication.user.complain.constant.ComplainStatus;
 import com.web.dev.authentication.user.complain.dto.ComplainRequestDto;
 import com.web.dev.authentication.user.complain.repository.Complain;
 import com.web.dev.authentication.user.complain.repository.ComplainRepository;
@@ -27,6 +28,7 @@ public class ComplainService {
         complain.setTitle(req.getTitle());
         complain.setTransaction(transactionRepository.findById(req.getTransactionId()).orElseThrow());
         complain.setUser(user);
+        complain.setComplainStatus(ComplainStatus.PENDING);
         complainRepository.save(complain);
     }
 }

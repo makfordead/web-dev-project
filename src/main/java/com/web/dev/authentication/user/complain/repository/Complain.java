@@ -1,6 +1,7 @@
 package com.web.dev.authentication.user.complain.repository;
 
 import com.web.dev.authentication.security.repository.entity.User;
+import com.web.dev.authentication.user.complain.constant.ComplainStatus;
 import com.web.dev.authentication.user.transaction.repository.Transaction;
 import lombok.AccessLevel;
 import lombok.Data;
@@ -27,4 +28,6 @@ public class Complain {
 
     @OneToOne
     User user;
+
+    ComplainStatus complainStatus;
 }
