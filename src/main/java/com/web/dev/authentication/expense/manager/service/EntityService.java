@@ -42,7 +42,7 @@ public class EntityService {
         final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Iterable<Expense> expenses = new ArrayList<>();
-        if(Objects.isNull(month))
+        if(Objects.isNull(month) && Objects.isNull(year))
             expenses = expenseRepository.findAll(QExpense.expense.user.email.eq(user.getEmail()));
         else
             expenses = expenseRepository.getByYearAndMonth(month, year);
