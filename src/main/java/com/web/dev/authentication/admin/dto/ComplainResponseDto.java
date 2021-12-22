@@ -8,9 +8,13 @@ import lombok.experimental.FieldDefaults;
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class ComplainResponseDto {
+    String id;
+
     String title;
 
     String description;
 
     ComplainStatus complainStatus;
+
+    String transactionId;
 }

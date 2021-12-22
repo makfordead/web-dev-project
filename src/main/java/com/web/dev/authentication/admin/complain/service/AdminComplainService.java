@@ -33,7 +33,11 @@ public class AdminComplainService {
 
     public ComplainResponseList getComplains() {
         final List<Complain> complains = complainRepository.findAll();
-        final List<ComplainResponseDto> complainResponseDtos = complains.stream().map(c -> mapper.map(c, ComplainResponseDto.class))
+        final List<ComplainResponseDto> complainResponseDtos = complains.stream().map(c -> {
+            final ComplainResponseDto cmp = mapper.map(c, ComplainResponseDto.class);
+            cmp.setTransactionId(c.getTransaction().getId());
+            return cmp;
+        })
                 .collect(Collectors.toList());
         final ComplainResponseList response = new ComplainResponseList();
         response.setComplains(complainResponseDtos);
