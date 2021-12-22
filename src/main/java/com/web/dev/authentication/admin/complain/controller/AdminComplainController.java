@@ -24,9 +24,9 @@ public class AdminComplainController {
     AdminComplainService adminComplainService;
     @PutMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public void acceptOrRejectComplain(@RequestParam final String transactionId,
+    public void acceptOrRejectComplain(@RequestParam final String complainId,
                                        @RequestParam final ComplainStatus status) {
-        adminComplainService.acceptOrRejectComplain(transactionId, status);
+        adminComplainService.acceptOrRejectComplain(complainId, status);
     }
 
     @GetMapping
